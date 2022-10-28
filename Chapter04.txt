@@ -1,0 +1,255 @@
+Chapter 04
+==========
+
+aws outposts list-outposts --region us-west-2
+
++-----------------------------------------------------------------------------+
+
+aws outposts get-outpost-instance-types --outpost-id op-8b286039iedad23e0
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-internet-gateway \
+    --query "InternetGateway.InternetGatewayId" \
+    --output text \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-vpc \
+    --cidr-block 10.20.0.0/21 \
+    --instance-tenancy default \
+    --no-amazon-provided-ipv6-cidr-block \
+    --query "Vpc.[VpcId,DhcpOptionsId,CidrBlockAssociationSet[*].AssociationId]" \
+    --output text \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 attach-internet-gateway \
+    --internet-gateway-id igw-0301e72c4522f4e2e \
+    --vpc-id vpc-06b64f761be00fcb3 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-availability-zones \
+    --query "AvailabilityZones[].{zZoneNameId:ZoneId}" \
+    --output text \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-subnet \
+    --vpc-id "vpc-06b64f761be00fcb3" \
+    --availability-zone-id "usw2-az1" \
+    --cidr-block 10.20.0.0/23 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-subnet \
+    --vpc-id "vpc-06b64f761be00fcb3" \
+    --availability-zone-id "usw2-az1" \
+    --outpost-arn "arn:aws:outposts:us-west-2:123456789012:outpost/op-8b286039iedad23e0" \
+    --cidr-block 10.20.6.0/23 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 associate-vpc-cidr-block \
+    --vpc-id "vpc-06b64f761be00fcb3" \
+    --cidr-block 10.20.8.0/21 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-subnet \
+    --vpc-id "vpc-06b64f761be00fcb3" \
+    --availability-zone-id " usw2-az1" \
+    --cidr-block 10.20.8.0/23 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-subnet \
+    --vpc-id "vpc-06b64f761be00fcb3" \
+    --availability-zone-id "usw2-az1" \
+    --cidr-block 10.20.14.0/23 \
+    --outpost-arn "arn:aws:outposts:us-west-2:123456789012:outpost/op-8b286039iedad23e0" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 modify-subnet-attribute --subnet-id subnet-061fe41c63e699bb9 \
+    --map-public-ip-on-launch \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-subnets --subnet-ids subnet-061fe41c63e699bb9 \
+    --query "Subnets[].{AutomaticPublicIPV4Assignment:MapPublicIpOnLaunch}" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-route-tables \
+    --filters "Name=vpc-id,Values=vpc-06b64f761be00fcb3,vpc-00bc84d9f66dd56f0" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-route-tables \
+    --filters "Name=vpc-id,Values=vpc-06b64f761be00fcb3,vpc-00bc84d9f66dd56f0" \
+    --query "RouteTables[].{IdOfTheRouteTable:RouteTableId,IdOfTheVPC:VpcId}" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-internet-gateways \
+    --filters "Name=attachment.vpc-id,Values=vpc-00bc84d9f66dd56f0,vpc-06b64f761be00fcb3" \
+    --query "InternetGateways[].{IdOfTheInternetGateway:InternetGatewayId,IdOfTheVPC:Attachments[].VpcId}" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-route --destination-cidr-block "0.0.0.0/0" \
+    --gateway-id igw-0301e72c4522f4e2e \
+    --route-table-id rtb-0ac038498f8affc9b \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-security-groups \
+    --filters "Name=vpc-id,Values=vpc-00bc84d9f66dd56f0,vpc-06b64f761be00fcb3" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-security-groups \
+    --filters "Name=vpc-id,Values=vpc-00bc84d9f66dd56f0,vpc-06b64f761be00fcb3" \
+    --query "SecurityGroups[].{IdOfTheSecurityGroup:GroupId,IdOfTheVPC:VpcId}" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+sudo yum install bind-utils
+
++-----------------------------------------------------------------------------+
+
+dig TXT +short o-o.myaddr.l.google.com @ns1.google.com
+
++-----------------------------------------------------------------------------+
+
+aws ec2 authorize-security-group-ingress \
+    --group-id sg-049e93c5df3e056dc \
+    --protocol tcp \
+    --port 22 \
+    --cidr 34.212.40.234/32 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-images \
+    --filters "Name=description,Values=Ubuntu*Server*20.04*SQL*2019*Express*Amazon*" \
+    --query "Images[].[CreationDate,ImageId,Description,ImageOwnerAlias]" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 create-key-pair --key-name OP1.LAB01 --key-format pem --query 'KeyMaterial' --output text > kp-OP1.LAB01.pem
+
++-----------------------------------------------------------------------------+
+
+chmod 400 kp-OP1.LAB01.pem
+
++-----------------------------------------------------------------------------+
+
+aws ec2 run-instances \
+    --image-id ami-01965e543ed9274e1 \
+    --count 1 \
+    --instance-type m5d.12xlarge \
+    --block-device-mappings "DeviceName=/dev/sdb,VirtualName=ephemeral0" \
+    --subnet-id subnet-02a96f65e7a82ee7c \
+    --key-name "OP1.LAB01" \
+    --security-group-ids sg-049e93c5df3e056dc 
+    --associate-public-ip-address \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-instance-status \
+    --instance-ids i-0c9a547400506f362 \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-instances \
+    --instance-ids i-0c9a547400506f362 \
+    --query "Reservations[].Instances[].{ConnectionIpAddress:PublicIpAddress}" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+ssh -i kp-OP1.LAB01.pem ubuntu@34.217.64.85
+
++-----------------------------------------------------------------------------+
+
+ec2metadata
+
++-----------------------------------------------------------------------------+
+
+sudo apt update
+sudo apt install nvme-cli
+sudo nvme list
+
++-----------------------------------------------------------------------------+
+
+nproc --all
+
++-----------------------------------------------------------------------------+
+
+cat /proc/meminfo
+
++-----------------------------------------------------------------------------+
+
+sudo systemctl mssql-server.service status
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-local-gateways \
+    --filters "Name=outpost-arn,Values=arn:aws:outposts:us-west-2:123456789012:outpost/op-8b286039iedad23e0" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-local-gateway-route-tables \
+    --filters "Name=local-gateway-id,Values=lgw-0cdc67d1ae6c75ff8" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 search-local-gateway-routes \
+    --local-gateway-route-table-id "lgw-rtb-0aeee96ea969f0f25" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-local-gateway-virtual-interface-groups \
+    --local-gateway-virtual-interface-group-ids "lgw-vif-grp-033d2b33464749f3a" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-local-gateway-virtual-interfaces \
+    --filters "Name=local-gateway-id,Values=lgw-0cdc67d1ae6c75ff8" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+
+
+aws ec2 describe-local-gateway-route-table-vpc-associations \
+    --local-gateway-route-table-vpc-association-ids \
+    --filters "Name=local-gateway-id,Values=lgw-0cdc67d1ae6c75ff8" \
+    --region "us-west-2";
+
++-----------------------------------------------------------------------------+

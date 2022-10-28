@@ -1,0 +1,111 @@
+Chapter 06
+==========
+
+SELECT
+    COUNT(UsedInstanceType_Count)
+FROM
+    "AWS/Outposts"
+GROUP BY
+    InstanceType,
+    OutpostId
+
++-----------------------------------------------------------------------------+
+
+SELECT
+    COUNT(AvailableInstanceType_Count)
+FROM
+    "AWS/Outposts"
+GROUP BY
+    InstanceType,
+    OutpostId
+
++-----------------------------------------------------------------------------+
+
+SELECT
+    AVG(InstanceFamilyCapacityAvailability)
+FROM 
+    "AWS/Outposts"
+GROUP BY
+    InstanceFamily,
+    OutpostId
+
++-----------------------------------------------------------------------------+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AWSCloudTrailAclCheck20150319",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "s3:GetBucketAcl",
+            "Resource": "arn:aws:s3:::cloudtrail-awslogs-123456789012-abcdefghi-jklmnop-do-not-delete"
+        },
+        {
+            "Sid": "AWSCloudTrailWrite20150319",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::cloudtrail-awslogs-123456789012-abcdefghi-jklmnop-do-not-delete/AWSLogs/123456789012/*",
+            "Condition": {
+                "StringEquals": {
+                    "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+            }
+        },
+        {
+            "Sid": "AWSCloudTrailHTTPSOnly20180329",
+            "Effect": "Deny",
+            "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::cloudtrail-awslogs-123456789012-abcdefghi-jklmnop-do-not-delete/AWSLogs/123456789012/*",
+                "arn:aws:s3:::cloudtrail-awslogs-123456789012-abcdefghi-jklmnop-do-not-delete"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        }
+    ]
+}
+
++-----------------------------------------------------------------------------+
+
+SELECT 
+	useridentity.type, eventname,awsregion,
+	sourceipaddress, requestparameters,
+	useridentity.principalid, useridentity.arn,
+	useridentity.accountid, useridentity.invokedby,
+	useridentity.accesskeyid, useridentity.username,
+	useridentity.sessioncontext, eventsource,
+	useragent, errorcode, errormessage,
+	responseelements, additionaleventdata, requestid,
+	eventid, resources, eventtype, apiversion, readonly,
+	recipientaccountid, serviceeventdetails,
+	sharedeventid, vpcendpointid
+FROM 
+	cloudtrail_logs_cloudtrail_awslogs_123456789012_abcdefg_hijklmnop_do_not_delete
+WHERE
+	CAST(eventsource AS VARCHAR) = 'outposts.amazonaws.com'
+GROUP BY
+	awsregion, eventname, useridentity.type,
+	sourceipaddress, requestparameters,
+	useridentity.principalid, useridentity.arn,
+	useridentity.accountid, useridentity.invokedby,
+	useridentity.accesskeyid, useridentity.username,
+	useridentity.sessioncontext, eventsource, useragent,
+	errorcode, errormessage, responseelements,
+	additionaleventdata, requestid, eventid, resources,
+	eventtype, apiversion, readonly, recipientaccountid,
+	serviceeventdetails, sharedeventid, vpcendpointid
+ORDER BY awsregion, useridentity.type
+LIMIT 10000
+

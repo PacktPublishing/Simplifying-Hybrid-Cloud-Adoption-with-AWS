@@ -1,0 +1,55 @@
+Chapter 05
+==========
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "outposts:ListTagsForResource",
+                "outposts:ListSites",
+                "outposts:ListOutposts",
+                "cloudwatch:GetMetricData",
+                "cloudwatch:ListMetricStreams",
+                "outposts:GetOutpost",
+                "outposts:GetOutpostInstanceTypes",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
++-----------------------------------------------------------------------------+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "cloudwatch:PutMetricData"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
+
++-----------------------------------------------------------------------------+
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeInternetGateways"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
