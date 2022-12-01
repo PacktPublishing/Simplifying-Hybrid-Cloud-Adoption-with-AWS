@@ -33,7 +33,7 @@ The code will look like the following:
   “LocalGateways”: [
   {
   “LocalGatewayId”: “lgw-0cdc67d1ae6c75ff8”,
-  “OutpostArn”: “arn:aws:outposts:us-west2:123456789012:outpost/op-8b286039iedad23e0”,
+  “OutpostArn”: “arn:aws:outposts:us-west-2:123456789012:outpost/op-8b286039iedad23e0”,
   “OwnerId”: “123456789012”,
   “State”: “available”,
   “Tags”: []
